@@ -1,0 +1,96 @@
+# Oral Cancer Detection - Model Configuration
+
+# Data configuration
+data:
+  image_size: [224, 224]  # Input image size (height, width)
+  batch_size: 32          # Batch size for training and evaluation
+  validation_split: 0.2   # Portion of training data to use for validation
+  test_split: 0.2         # Portion of data to use for testing
+  augmentation:
+    rotation_range: 20
+    width_shift_range: 0.2
+    height_shift_range: 0.2
+    shear_range: 0.2
+    zoom_range: 0.2
+    horizontal_flip: true
+    fill_mode: "nearest"
+
+# Model configurations
+models:
+  resnet50:
+    weights: "imagenet"
+    learning_rate: 0.001
+    fine_tune: true
+    fine_tune_layers: 10
+    fine_tune_lr: 0.0001
+    dropout_rate: 0.5
+
+  resnet101:
+    weights: "imagenet"
+    learning_rate: 0.001
+    fine_tune: true
+    fine_tune_layers: 15
+    fine_tune_lr: 0.0001
+    dropout_rate: 0.5
+
+  efficientnetb0:
+    weights: "imagenet"
+    learning_rate: 0.001
+    fine_tune: true
+    fine_tune_layers: 10
+    fine_tune_lr: 0.0001
+    dropout_rate: 0.5
+
+  efficientnetb3:
+    weights: "imagenet"
+    learning_rate: 0.0005
+    fine_tune: true
+    fine_tune_layers: 15
+    fine_tune_lr: 0.00005
+    dropout_rate: 0.5
+
+  densenet121:
+    weights: "imagenet"
+    learning_rate: 0.001
+    fine_tune: true
+    fine_tune_layers: 10
+    fine_tune_lr: 0.0001
+    dropout_rate: 0.5
+
+  custom_cnn:
+    learning_rate: 0.001
+    dropout_rate: 0.5
+
+# Training configuration
+training:
+  epochs: 50
+  fine_tune_epochs: 20
+  early_stopping:
+    patience: 10
+    monitor: "val_auc"
+    mode: "max"
+  reduce_lr:
+    patience: 5
+    factor: 0.2
+    min_lr: 0.000001
+    monitor: "val_loss"
+  checkpoint:
+    monitor: "val_auc"
+    mode: "max"
+    save_best_only: true
+
+# Evaluation configuration
+evaluation:
+  metrics:
+    - "accuracy"
+    - "precision"
+    - "recall"
+    - "auc"
+    - "f1_score"
+  threshold: 0.5  # Classification threshold
+
+# Inference configuration
+inference:
+  model_path: "model/checkpoints/best_model.h5"
+  confidence_threshold: 0.5
+  visualization: true

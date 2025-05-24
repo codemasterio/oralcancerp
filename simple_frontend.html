@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oral Cancer Detection</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2c3e50;
+            --accent-color: #e74c3c;
+            --background-color: #f8f9fa;
+            --text-color: #333;
+            --light-gray: #e9ecef;
+            --medium-gray: #ced4da;
+            --dark-gray: #6c757d;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --info-color: #17a2b8;
+            --border-radius: 4px;
+            --box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            --transition-speed: 0.3s;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            font-size: 16px;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        header {
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 15px 0;
+            margin-bottom: 30px;
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo h1 {
+            font-size: 1.5rem;
+            margin: 0;
+            color: var(--primary-color);
+        }
+
+        .main-content {
+            padding: 20px 0;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        h1, h2, h3 {
+            margin-bottom: 1rem;
+            color: var(--secondary-color);
+        }
+
+        p {
+            margin-bottom: 1rem;
+        }
+
+        .upload-section {
+            margin-bottom: 40px;
+        }
+
+        .dropzone {
+            border: 2px dashed var(--medium-gray);
+            border-radius: var(--border-radius);
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color var(--transition-speed) ease;
+            background-color: white;
+            margin-bottom: 20px;
+        }
+
+        .dropzone:hover {
+            border-color: var(--primary-color);
+        }
+
+        .dropzone-active {
+            border-color: var(--primary-color);
+            background-color: rgba(52, 152, 219, 0.05);
+        }
+
+        .preview-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .image-preview {
+            position: relative;
+            max-width: 300px;
+            max-height: 300px;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--box-shadow);
+        }
+
+        .image-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .button {
+            cursor: pointer;
+            padding: 10px 20px;
+            border: none;
+            border-radius: var(--border-radius);
+            background-color: var(--primary-color);
+            color: white;
+            font-size: 16px;
+            font-weight: 500;
+            transition: background-color var(--transition-speed) ease;
+            display: inline-block;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .button:hover {
+            background-color: #2980b9;
+        }
+
+        .button:disabled {
+            background-color: var(--medium-gray);
+            cursor: not-allowed;
+        }
+
+        .results-section {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 30px;
+            margin-bottom: 40px;
+            display: none;
+        }
+
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .result-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+
+        .result-image {
+            flex: 1;
+            min-width: 300px;
+            max-width: 500px;
+        }
+
+        .result-image img {
+            width: 100%;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+
+        .result-details {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .prediction-label {
+            font-size: 1.5rem;
+            font-weight: 500;
+            margin-bottom: 15px;
+            padding: 10px 15px;
+            border-radius: var(--border-radius);
+            display: inline-block;
+        }
+
+        .prediction-cancer {
+            background-color: rgba(220, 53, 69, 0.1);
+            color: var(--danger-color);
+        }
+
+        .prediction-non-cancer {
+            background-color: rgba(40, 167, 69, 0.1);
+            color: var(--success-color);
+        }
+
+        .confidence-meter {
+            margin: 20px 0;
+        }
+
+        .confidence-bar {
+            height: 10px;
+            background-color: var(--light-gray);
+            border-radius: 5px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+
+        .confidence-fill {
+            height: 100%;
+            border-radius: 5px;
+            background-color: var(--primary-color);
+        }
+
+        .disclaimer {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: rgba(255, 193, 7, 0.1);
+            border-left: 4px solid var(--warning-color);
+            border-radius: var(--border-radius);
+        }
+
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top: 4px solid var(--primary-color);
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+            display: none;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            color: var(--danger-color);
+            background-color: rgba(220, 53, 69, 0.1);
+            padding: 10px;
+            border-radius: var(--border-radius);
+            margin-top: 10px;
+            display: none;
+        }
+
+        footer {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 20px 0;
+            margin-top: 40px;
+        }
+
+        .footer-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        @media (max-width: 768px) {
+            .result-content {
+                flex-direction: column;
+            }
+            
+            .footer-container {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <div class="logo">
+                <h1>Oral Cancer Detection</h1>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="container">
+            <h1>Oral Cancer Detection</h1>
+            
+            <div class="card">
+                <h3>Instructions</h3>
+                <p>
+                    Upload a clear, well-lit image of the oral cavity. The image should focus on the area of concern.
+                    Our AI model will analyze the image and provide a prediction on whether signs of oral cancer are detected.
+                </p>
+                <p>
+                    <strong>Note:</strong> This tool is for screening purposes only and does not replace professional medical advice.
+                </p>
+            </div>
+            
+            <div class="upload-section">
+                <h2>Upload Oral Image</h2>
+                <p>
+                    Upload a clear image of the oral cavity for cancer detection. 
+                    The image should be well-lit and focused.
+                </p>
+                
+                <div id="dropzone" class="dropzone">
+                    <i class="fas fa-cloud-upload-alt" style="font-size: 3rem; color: #3498db; margin-bottom: 15px;"></i>
+                    <p>Drag & drop an image here, or click to select</p>
+                    <p style="font-size: 0.9rem; color: #6c757d; margin-top: 10px;">
+                        Supported formats: JPEG, PNG (Max size: 5MB)
+                    </p>
+                    <input type="file" id="fileInput" style="display: none;" accept=".jpg,.jpeg,.png">
+                </div>
+                
+                <div id="previewContainer" class="preview-container" style="display: none;">
+                    <div class="image-preview">
+                        <img id="imagePreview" src="#" alt="Preview">
+                    </div>
+                </div>
+                
+                <div style="text-align: center; margin-top: 20px;">
+                    <button id="analyzeButton" class="button" disabled>
+                        <i class="fas fa-microscope" style="margin-right: 8px;"></i> Analyze Image
+                    </button>
+                </div>
+                
+                <div id="spinner" class="spinner"></div>
+                <div id="errorMessage" class="error-message"></div>
+            </div>
+            
+            <div id="resultsSection" class="results-section">
+                <div class="result-header">
+                    <h2 class="result-title">Analysis Results</h2>
+                </div>
+                
+                <div class="result-content">
+                    <div class="result-image">
+                        <img id="resultImage" src="#" alt="Analysis visualization">
+                    </div>
+                    
+                    <div class="result-details">
+                        <div>
+                            <span id="predictionLabel" class="prediction-label">
+                                <i id="predictionIcon" class="fas fa-check-circle" style="margin-right: 8px;"></i>
+                                <span id="predictionText">Non-Cancer</span>
+                            </span>
+                        </div>
+                        
+                        <div class="confidence-meter">
+                            <div style="display: flex; justify-content: space-between;">
+                                <span>Confidence</span>
+                                <span><strong id="confidencePercent">0%</strong></span>
+                            </div>
+                            <div class="confidence-bar">
+                                <div id="confidenceFill" class="confidence-fill" style="width: 0%;"></div>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top: 20px;">
+                            <h4>What does this mean?</h4>
+                            <p id="predictionExplanation">
+                                The analysis indicates potential signs of oral cancer with confidence. 
+                                This is not a definitive diagnosis. Please consult with a healthcare professional immediately 
+                                for a proper clinical evaluation.
+                            </p>
+                        </div>
+                        
+                        <div class="disclaimer">
+                            <strong>Important Note:</strong> This AI tool provides preliminary analysis to help identify potential signs of oral cancer. 
+                            It's designed to assist healthcare professionals in early detection and monitoring. 
+                            The tool's results should never replace professional medical advice. Always consult with 
+                            your dentist or healthcare provider for any concerns about your oral health.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3>What to Look For</h3>
+                <p>
+                    Common signs of oral cancer include:
+                </p>
+                <ul>
+                    <li>Persistent mouth sores that don't heal</li>
+                    <li>Persistent mouth pain</li>
+                    <li>A lump or thickening in the cheek</li>
+                    <li>White or red patches on the gums, tongue, tonsils, or lining of the mouth</li>
+                    <li>Difficulty swallowing or chewing</li>
+                    <li>Difficulty moving the jaw or tongue</li>
+                    <li>Numbness of the tongue or other area of the mouth</li>
+                </ul>
+                <p style="margin-top: 15px;">
+                    If you notice any of these symptoms, please consult a healthcare professional immediately.
+                </p>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container footer-container">
+            <div>
+                &copy; 2025 Oral Cancer Detection. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const dropzone = document.getElementById('dropzone');
+            const fileInput = document.getElementById('fileInput');
+            const imagePreview = document.getElementById('imagePreview');
+            const previewContainer = document.getElementById('previewContainer');
+            const analyzeButton = document.getElementById('analyzeButton');
+            const spinner = document.getElementById('spinner');
+            const errorMessage = document.getElementById('errorMessage');
+            const resultsSection = document.getElementById('resultsSection');
+            const resultImage = document.getElementById('resultImage');
+            const predictionLabel = document.getElementById('predictionLabel');
+            const predictionIcon = document.getElementById('predictionIcon');
+            const predictionText = document.getElementById('predictionText');
+            const confidencePercent = document.getElementById('confidencePercent');
+            const confidenceFill = document.getElementById('confidenceFill');
+            const predictionExplanation = document.getElementById('predictionExplanation');
+            
+            // API endpoint
+            const apiUrl = 'http://localhost:8000';
+            
+            // Handle file selection via the dropzone
+            dropzone.addEventListener('click', function() {
+                fileInput.click();
+            });
+            
+            // Handle drag and drop events
+            dropzone.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                dropzone.classList.add('dropzone-active');
+            });
+            
+            dropzone.addEventListener('dragleave', function() {
+                dropzone.classList.remove('dropzone-active');
+            });
+            
+            dropzone.addEventListener('drop', function(e) {
+                e.preventDefault();
+                dropzone.classList.remove('dropzone-active');
+                
+                if (e.dataTransfer.files.length) {
+                    handleFile(e.dataTransfer.files[0]);
+                }
+            });
+            
+            // Handle file selection via the file input
+            fileInput.addEventListener('change', function() {
+                if (fileInput.files.length) {
+                    handleFile(fileInput.files[0]);
+                }
+            });
+            
+            // Handle file selection
+            function handleFile(file) {
+                // Check if file is an image
+                if (!file.type.startsWith('image/')) {
+                    showError('Please upload a valid image file (JPEG, PNG)');
+                    return;
+                }
+                
+                // Check file size (max 5MB)
+                const maxSize = 5 * 1024 * 1024; // 5MB
+                if (file.size > maxSize) {
+                    showError('Image size exceeds the maximum limit of 5MB');
+                    return;
+                }
+                
+                // Create preview
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imagePreview.src = e.target.result;
+                    previewContainer.style.display = 'flex';
+                    analyzeButton.disabled = false;
+                    hideError();
+                };
+                reader.readAsDataURL(file);
+            }
+            
+            // Handle analyze button click
+            analyzeButton.addEventListener('click', function() {
+                if (fileInput.files.length === 0) {
+                    showError('Please select an image first');
+                    return;
+                }
+                
+                // Show spinner
+                spinner.style.display = 'block';
+                analyzeButton.disabled = true;
+                hideError();
+                resultsSection.style.display = 'none';
+                
+                // Create form data
+                const formData = new FormData();
+                formData.append('file', fileInput.files[0]);
+                
+                // Send request to API
+                fetch(`${apiUrl}/predict`, {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(data => {
+                            throw new Error(data.error || 'An error occurred during prediction');
+                        });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Hide spinner
+                    spinner.style.display = 'none';
+                    analyzeButton.disabled = false;
+                    
+                    // Display results
+                    displayResults(data);
+                })
+                .catch(error => {
+                    // Hide spinner
+                    spinner.style.display = 'none';
+                    analyzeButton.disabled = false;
+                    
+                    // Show error
+                    showError(error.message || 'An error occurred during prediction');
+                });
+            });
+            
+            // Display prediction results
+            function displayResults(data) {
+                // Set result image
+                resultImage.src = `${apiUrl}${data.visualization_url}`;
+                
+                // Set prediction label
+                const isCancer = data.class_name === 'Cancer';
+                predictionText.textContent = data.class_name;
+                
+                if (isCancer) {
+                    predictionLabel.className = 'prediction-label prediction-cancer';
+                    predictionIcon.className = 'fas fa-exclamation-triangle';
+                    confidenceFill.style.backgroundColor = '#dc3545';
+                } else {
+                    predictionLabel.className = 'prediction-label prediction-non-cancer';
+                    predictionIcon.className = 'fas fa-check-circle';
+                    confidenceFill.style.backgroundColor = '#28a745';
+                }
+                
+                // Set confidence
+                const confidenceValue = (data.confidence * 100).toFixed(2);
+                confidencePercent.textContent = `${confidenceValue}%`;
+                confidenceFill.style.width = `${confidenceValue}%`;
+                
+                // Set explanation
+                if (isCancer) {
+                    predictionExplanation.textContent = `The analysis indicates potential signs of oral cancer with ${confidenceValue}% confidence. This is not a definitive diagnosis. Please consult with a healthcare professional immediately for a proper clinical evaluation.`;
+                } else {
+                    predictionExplanation.textContent = `The analysis did not detect signs of oral cancer with ${confidenceValue}% confidence. However, regular check-ups with dental professionals are still recommended for oral health.`;
+                }
+                
+                // Show results section
+                resultsSection.style.display = 'block';
+                
+                // Scroll to results
+                resultsSection.scrollIntoView({ behavior: 'smooth' });
+            }
+            
+            // Show error message
+            function showError(message) {
+                errorMessage.textContent = message;
+                errorMessage.style.display = 'block';
+            }
+            
+            // Hide error message
+            function hideError() {
+                errorMessage.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
