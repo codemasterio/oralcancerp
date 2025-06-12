@@ -8,14 +8,16 @@ services:
       - key: PORT
         fromEnv: PORT
     healthCheckPath: /health
-
+    httpPort: 8000
+    rootDirectory: ./
+    
   - type: static
     name: oral-cancer-frontend
     env: python
     buildCommand: ""
     startCommand: ""
-    buildCommand: ""
     staticDirs:
       - directory: ./
         buildCommand: ""
+        entrypoint: ""
         include: ["simple_frontend.html"]
