@@ -29,26 +29,48 @@ os.makedirs(UPLOAD_DIR, exist_ok=True)
 # Load model and metadata
 try:
     import joblib
+    import numpy as np
+    import sys
     
-    # Load model and scaler using joblib
+    logger.info(f"Python version: {sys.version}")
+    logger.info(f"NumPy version: {np.__version__}")
+    logger.info(f"Joblib version: {joblib.__version__}")
+    
+    # Load model with version checking
     logger.info(f"Loading model from: {MODEL_PATH}")
-    model = joblib.load(MODEL_PATH)
-    logger.info("Model loaded successfully")
+    try:
+        model = joblib.load(MODEL_PATH)
+        logger.info("Model loaded successfully")
+    except Exception as e:
+        logger.error(f"Error loading model: {str(e)}")
+        logger.error("Trying to load with numpy array fix...")
+        # Try loading with numpy array compatibility
+        model = joblib.load(MODEL_PATH, fix_imports=True)
+        logger.info("Model loaded successfully with numpy array fix")
     
+    # Load scaler
     logger.info(f"Loading scaler from: {SCALER_PATH}")
-    scaler = joblib.load(SCALER_PATH)
-    logger.info("Scaler loaded successfully")
+    try:
+        scaler = joblib.load(SCALER_PATH)
+        logger.info("Scaler loaded successfully")
+    except Exception as e:
+        logger.error(f"Error loading scaler: {str(e)}")
+        logger.error("Trying to load with numpy array fix...")
+        scaler = joblib.load(SCALER_PATH, fix_imports=True)
+        logger.info("Scaler loaded successfully with numpy array fix")
     
-    # Load metadata if it exists
+    # Try to load metadata if it exists
+    class_names = ['Cancer', 'Normal']
     if os.path.exists(METADATA_PATH):
         logger.info(f"Loading metadata from: {METADATA_PATH}")
-        with open(METADATA_PATH, 'rb') as f:
-            metadata = joblib.load(f)
-            class_names = metadata.get('class_names', ['Cancer', 'Normal'])
-        logger.info("Metadata loaded successfully")
-    else:
-        class_names = ['Cancer', 'Normal']
-        logger.warning(f"Metadata file not found at {METADATA_PATH}, using default class names")
+        try:
+            with open(METADATA_PATH, 'rb') as f:
+                metadata = joblib.load(f, fix_imports=True)
+                class_names = metadata.get('class_names', class_names)
+            logger.info("Metadata loaded successfully")
+        except Exception as e:
+            logger.warning(f"Error loading metadata: {str(e)}")
+            logger.warning("Using default class names")
     
     logger.info(f"Model loaded successfully from {MODEL_PATH}")
     logger.info(f"Class names: {class_names}")
