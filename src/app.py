@@ -28,21 +28,27 @@ os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 # Load model and metadata
 try:
-    import pickle
+    import joblib
     
-    # Load model and metadata
-    with open(MODEL_PATH, 'rb') as f:
-        model = pickle.load(f)
+    # Load model and scaler using joblib
+    logger.info(f"Loading model from: {MODEL_PATH}")
+    model = joblib.load(MODEL_PATH)
+    logger.info("Model loaded successfully")
     
-    with open(SCALER_PATH, 'rb') as f:
-        scaler = pickle.load(f)
+    logger.info(f"Loading scaler from: {SCALER_PATH}")
+    scaler = joblib.load(SCALER_PATH)
+    logger.info("Scaler loaded successfully")
     
+    # Load metadata if it exists
     if os.path.exists(METADATA_PATH):
+        logger.info(f"Loading metadata from: {METADATA_PATH}")
         with open(METADATA_PATH, 'rb') as f:
-            metadata = pickle.load(f)
+            metadata = joblib.load(f)
             class_names = metadata.get('class_names', ['Cancer', 'Normal'])
+        logger.info("Metadata loaded successfully")
     else:
         class_names = ['Cancer', 'Normal']
+        logger.warning(f"Metadata file not found at {METADATA_PATH}, using default class names")
     
     logger.info(f"Model loaded successfully from {MODEL_PATH}")
     logger.info(f"Class names: {class_names}")
