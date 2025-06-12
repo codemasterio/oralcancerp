@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: oral-cancer-detection
+    env: python
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "python simple_backend.py"
+    envVars:
+      - key: PORT
+        fromEnv: PORT
+    healthCheckPath: /health
+
+  - type: static
+    name: oral-cancer-frontend
+    env: python
+    buildCommand: ""
+    startCommand: ""
+    buildCommand: ""
+    staticDirs:
+      - directory: ./
+        buildCommand: ""
+        include: ["simple_frontend.html"]
