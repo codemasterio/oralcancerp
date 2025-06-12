@@ -17,8 +17,8 @@ logger = logging.getLogger(__name__)
 
 # Constants
 UPLOAD_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "uploads")
-MODEL_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "model", "checkpoints", "svm_20250524_121655.pkl")
-SCALER_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "model", "checkpoints", "feature_scaler.pkl")
+MODEL_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "model", "checkpoints", "svm_model_numpy_1243.pkl")
+SCALER_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "model", "checkpoints", "feature_scaler_numpy_1243.pkl")
 SCALER_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "model", "checkpoints", "feature_scaler.pkl")
 METADATA_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "model", "checkpoints", "svm_20250524_121655_metadata.pkl")
 IMAGE_SIZE = (224, 224)
