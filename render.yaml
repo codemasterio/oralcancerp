@@ -3,7 +3,7 @@ services:
     name: oral-cancer-detection
     env: python
     buildCommand: "pip install -r requirements.txt"
-    startCommand: "python run.py"
+    startCommand: "python src/run.py"
     envVars:
       - key: PORT
         fromEnv: PORT
