@@ -1,4 +1,4 @@
 flask==2.3.3
-numpy==1.21.6
+numpy==1.24.3
 opencv-python==4.8.0.74
 scikit-learn==1.2.2
