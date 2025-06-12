@@ -31,41 +31,31 @@ try:
     import cloudpickle
     import numpy as np
     import sys
-    import joblib  # Keep joblib for potential fallback
     
     logger.info(f"Python version: {sys.version}")
     logger.info(f"NumPy version: {np.__version__}")
     logger.info(f"Cloudpickle version: {cloudpickle.__version__}")
     
-    # Function to try loading with cloudpickle first, then fallback to joblib
-    def safe_load(path, description):
-        try:
-            logger.info(f"Loading {description} with cloudpickle from: {path}")
-            with open(path, 'rb') as f:
-                return cloudpickle.load(f)
-        except Exception as e1:
-            logger.warning(f"Failed to load {description} with cloudpickle: {str(e1)}")
-            try:
-                logger.info(f"Trying to load {description} with joblib...")
-                return joblib.load(path)
-            except Exception as e2:
-                logger.error(f"Failed to load {description} with joblib: {str(e2)}")
-                raise
-    
-    # Load model
-    model = safe_load(MODEL_PATH, "model")
+    # Load model with cloudpickle
+    logger.info(f"Loading model from: {MODEL_PATH}")
+    with open(MODEL_PATH, 'rb') as f:
+        model = cloudpickle.load(f)
     logger.info("Model loaded successfully")
     
-    # Load scaler
-    scaler = safe_load(SCALER_PATH, "scaler")
+    # Load scaler with cloudpickle
+    logger.info(f"Loading scaler from: {SCALER_PATH}")
+    with open(SCALER_PATH, 'rb') as f:
+        scaler = cloudpickle.load(f)
     logger.info("Scaler loaded successfully")
     
     # Load metadata if it exists
     class_names = ['Cancer', 'Normal']
     if os.path.exists(METADATA_PATH):
+        logger.info(f"Loading metadata from: {METADATA_PATH}")
         try:
-            metadata = safe_load(METADATA_PATH, "metadata")
-            class_names = metadata.get('class_names', class_names)
+            with open(METADATA_PATH, 'rb') as f:
+                metadata = cloudpickle.load(f)
+                class_names = metadata.get('class_names', class_names)
             logger.info("Metadata loaded successfully")
         except Exception as e:
             logger.warning(f"Error loading metadata: {str(e)}")
