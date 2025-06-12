@@ -38,5 +38,6 @@ frontend/node_modules/
 uploads/
 
 # Model checkpoints
-model/checkpoints/*.pkl
 model/checkpoints/*.h5
+!model/checkpoints/svm_model_numpy_1243.pkl
+!model/checkpoints/feature_scaler_numpy_1243.pkl
