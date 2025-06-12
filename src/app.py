@@ -28,45 +28,44 @@ os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 # Load model and metadata
 try:
-    import joblib
+    import cloudpickle
     import numpy as np
     import sys
+    import joblib  # Keep joblib for potential fallback
     
     logger.info(f"Python version: {sys.version}")
     logger.info(f"NumPy version: {np.__version__}")
-    logger.info(f"Joblib version: {joblib.__version__}")
+    logger.info(f"Cloudpickle version: {cloudpickle.__version__}")
     
-    # Load model with version checking
-    logger.info(f"Loading model from: {MODEL_PATH}")
-    try:
-        model = joblib.load(MODEL_PATH)
-        logger.info("Model loaded successfully")
-    except Exception as e:
-        logger.error(f"Error loading model: {str(e)}")
-        logger.error("Trying to load with numpy array fix...")
-        # Try loading with numpy array compatibility
-        model = joblib.load(MODEL_PATH, fix_imports=True)
-        logger.info("Model loaded successfully with numpy array fix")
+    # Function to try loading with cloudpickle first, then fallback to joblib
+    def safe_load(path, description):
+        try:
+            logger.info(f"Loading {description} with cloudpickle from: {path}")
+            with open(path, 'rb') as f:
+                return cloudpickle.load(f)
+        except Exception as e1:
+            logger.warning(f"Failed to load {description} with cloudpickle: {str(e1)}")
+            try:
+                logger.info(f"Trying to load {description} with joblib...")
+                return joblib.load(path)
+            except Exception as e2:
+                logger.error(f"Failed to load {description} with joblib: {str(e2)}")
+                raise
+    
+    # Load model
+    model = safe_load(MODEL_PATH, "model")
+    logger.info("Model loaded successfully")
     
     # Load scaler
-    logger.info(f"Loading scaler from: {SCALER_PATH}")
-    try:
-        scaler = joblib.load(SCALER_PATH)
-        logger.info("Scaler loaded successfully")
-    except Exception as e:
-        logger.error(f"Error loading scaler: {str(e)}")
-        logger.error("Trying to load with numpy array fix...")
-        scaler = joblib.load(SCALER_PATH, fix_imports=True)
-        logger.info("Scaler loaded successfully with numpy array fix")
+    scaler = safe_load(SCALER_PATH, "scaler")
+    logger.info("Scaler loaded successfully")
     
-    # Try to load metadata if it exists
+    # Load metadata if it exists
     class_names = ['Cancer', 'Normal']
     if os.path.exists(METADATA_PATH):
-        logger.info(f"Loading metadata from: {METADATA_PATH}")
         try:
-            with open(METADATA_PATH, 'rb') as f:
-                metadata = joblib.load(f, fix_imports=True)
-                class_names = metadata.get('class_names', class_names)
+            metadata = safe_load(METADATA_PATH, "metadata")
+            class_names = metadata.get('class_names', class_names)
             logger.info("Metadata loaded successfully")
         except Exception as e:
             logger.warning(f"Error loading metadata: {str(e)}")
