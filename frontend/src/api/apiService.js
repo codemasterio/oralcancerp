@@ -36,6 +36,8 @@ export const predictImage = async (imageFile) => {
   return response.data;
 };
 
-export default {
+const apiService = {
   predictImage,
 };
+
+export default apiService;

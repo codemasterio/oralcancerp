@@ -3,7 +3,7 @@ import React from 'react';
 const PredictionResult = ({ result }) => {
   if (!result) return null;
 
-  const { class_name, confidence, probability, inference_time, visualization_url } = result;
+  const { class_name, confidence, inference_time, visualization_url } = result;
   const isCancer = class_name === 'Cancer';
   
   // Format confidence as percentage

@@ -10,9 +10,13 @@ import HomePage from './pages/HomePage';
 import PredictionPage from './pages/PredictionPage';
 import AboutPage from './pages/AboutPage';
 import NotFoundPage from './pages/NotFoundPage';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import TermsOfService from './pages/TermsOfService';
 
 // Import styles
 import './styles/App.css';
+import './styles/PrivacyPolicy.css';
+import './styles/TermsOfService.css';
 
 function App() {
   return (
@@ -23,6 +27,8 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/predict" element={<PredictionPage />} />
           <Route path="/about" element={<AboutPage />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/terms" element={<TermsOfService />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </main>

@@ -21,10 +21,10 @@ const Footer = () => {
             <Link to="/about" className="footer-link">About</Link>
           </li>
           <li>
-            <a href="#" className="footer-link">Privacy Policy</a>
+            <Link to="/privacy-policy" className="footer-link">Privacy Policy</Link>
           </li>
           <li>
-            <a href="#" className="footer-link">Terms of Service</a>
+            <Link to="/terms" className="footer-link">Terms of Service</Link>
           </li>
         </ul>
       </div>
