@@ -28,6 +28,25 @@ oral-cancer-detection/
 └── docker/                   # Docker configuration
 ```
 
+## Model Files
+
+Due to GitHub's file size limitations, the model files are not included in the repository. You need to download them separately and place them in the `model/checkpoints/` directory.
+
+### Option 1: Download Manually
+
+1. Download the following files and place them in the `model/checkpoints/` directory:
+   - `latest_svm_model.pkl`
+   - `feature_scaler.pkl`
+   - `svm_20250524_121655_metadata.pkl`
+
+### Option 2: Using the Download Script
+
+1. Update the `scripts/download_models.py` file with the correct URLs for your model files.
+2. Run the script:
+   ```
+   python scripts/download_models.py
+   ```
+
 ## Setup Instructions
 
 ### Prerequisites
