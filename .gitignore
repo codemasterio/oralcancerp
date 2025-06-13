@@ -30,14 +30,40 @@ wheels/
 *.swp
 *.swo
 
-# Frontend build files
+# Frontend
 frontend/build/
 frontend/node_modules/
+frontend/.env
+frontend/.env.local
+frontend/.env.development.local
+frontend/.env.test.local
+frontend/.env.production.local
 
 # Backend uploads
 uploads/
 
-# Model checkpoints
-model/checkpoints/*.h5
-!model/checkpoints/svm_model_numpy_1243.pkl
-!model/checkpoints/feature_scaler_numpy_1243.pkl
+# Model and data files - these should be downloaded separately
+model/checkpoints/
+data/
+
+# Large files
+*.h5
+*.hdf5
+*.pkl
+*.pth
+*.pt
+*.bin
+*.npy
+*.npz
+*.jpg
+*.jpeg
+*.png
+*.zip
+*.tar.gz
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
