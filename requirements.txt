@@ -12,7 +12,8 @@ joblib==1.3.2
 opencv-python-headless==4.9.0.80
 cloudpickle==3.0.0
 tensorflow==2.15.0
-keras==3.1.1
+# Keras is included with TensorFlow as tensorflow.keras
+# Remove explicit keras installation to avoid conflicts
 
 # Utils
 pillow==10.2.0
