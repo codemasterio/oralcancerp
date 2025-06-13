@@ -4,7 +4,7 @@ Configuration settings for the backend API.
 """
 
 import os
-from pydantic import BaseSettings
+from pydantic_settings import BaseSettings
 from typing import List
 from functools import lru_cache
 
@@ -35,7 +35,7 @@ class Settings(BaseSettings):
     # Model settings
     MODEL_PATH: str = os.path.join(
         os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-        "model", "checkpoints", "best_model.h5"
+        "model", "checkpoints", "latest_svm_model.pkl"
     )
     MODEL_IMAGE_SIZE: tuple = (224, 224)
     

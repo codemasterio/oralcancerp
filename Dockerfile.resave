@@ -1,0 +1,29 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Python dependencies
+COPY scripts/requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy the model files
+COPY model/checkpoints/svm_20250524_121655.pkl /app/model.pkl
+COPY model/checkpoints/feature_scaler.pkl /app/scaler.pkl
+
+# Create a script to re-save the model
+RUN echo 'import joblib\n\
+print("Loading model...")\n\
+model = joblib.load("model.pkl")\nprint("Model loaded")\n\
+print("Loading scaler...")\n\
+scaler = joblib.load("scaler.pkl")\nprint("Scaler loaded")\n\
+print("Saving model with joblib...")\n\
+joblib.dump(model, "model_np1243.pkl")\njoblib.dump(scaler, "scaler_np1243.pkl")\n\
+print("Done!")\n' > resave.py
+
+# Run the script
+CMD ["python", "resave.py"]

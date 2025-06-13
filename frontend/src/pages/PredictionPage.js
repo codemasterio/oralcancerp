@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import { toast } from 'react-toastify';
+import { predictImage } from '../api/apiService';
 
 import ImageUpload from '../components/ImageUpload';
 import PredictionResult from '../components/PredictionResult';
@@ -25,23 +25,15 @@ const PredictionPage = () => {
     setIsLoading(true);
     setPredictionResult(null);
     
-    // Create form data
-    const formData = new FormData();
-    formData.append('file', selectedImage);
-    
     try {
       // Make API request to backend
-      const response = await axios.post('/predict', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      });
+      const result = await predictImage(selectedImage);
       
       // Handle successful response
-      setPredictionResult(response.data);
+      setPredictionResult(result);
       
       // Show success toast based on prediction
-      if (response.data.class_name === 'Cancer') {
+      if (result.class_name === 'Cancer') {
         toast.error('Potential signs of oral cancer detected. Please consult a healthcare professional.');
       } else {
         toast.success('No signs of oral cancer detected.');
