@@ -1,23 +1,41 @@
 services:
+  # Backend service
   - type: web
-    name: oral-cancer-detection
+    name: oral-cancer-backend
     env: python
-    buildCommand: "pip install -r requirements.txt"
-    startCommand: "python src/run.py"
+    buildCommand: |
+      pip install -r requirements.txt
+      python scripts/download_models.py
+    startCommand: gunicorn -c gunicorn_config.py backend.main:app
     envVars:
       - key: PORT
         fromEnv: PORT
+      - key: PYTHON_VERSION
+        value: 3.10.12
+      - key: PYTHONUNBUFFERED
+        value: 1
     healthCheckPath: /health
     httpPort: 8000
     rootDirectory: ./
-    
-  - type: static
+    autoDeploy: true
+
+  # Frontend service (React)
+  - type: web
     name: oral-cancer-frontend
-    env: python
-    buildCommand: ""
-    startCommand: ""
+    env: node
+    buildCommand: |
+      cd frontend
+      npm install
+      npm run build
+    startCommand: serve -s build -l $PORT
+    envVars:
+      - key: PORT
+        fromEnv: PORT
+      - key: REACT_APP_API_URL
+        value: https://oral-cancer-backend.onrender.com
+      - key: NODE_VERSION
+        value: 16.17.0
     staticDirs:
-      - directory: ./
-        buildCommand: ""
-        entrypoint: ""
-        include: ["simple_frontend.html"]
+      - directory: /frontend/build
+        entrypoint: index.html
+    autoDeploy: true
