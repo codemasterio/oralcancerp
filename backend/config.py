@@ -28,7 +28,7 @@ class Settings(BaseSettings):
     CORS_ORIGINS: List[str] = os.getenv(
         "CORS_ORIGINS", 
         "http://localhost:3000,http://localhost:8000"
-    ).split(",")
+    ).split(",") if os.getenv("CORS_ORIGINS") else ["*"]
     
     # File upload settings
     UPLOAD_DIR: str = os.path.join(os.path.dirname(os.path.abspath(__file__)), "uploads")
